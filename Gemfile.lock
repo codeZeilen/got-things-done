@@ -1,3 +1,11 @@
+GIT
+  remote: git@github.com:codeZeilen/wunderlist-api.git
+  revision: 6672e57a86d367533da916bd47fd28eb3d44e5c1
+  specs:
+    wunderlist-api (0.7.1)
+      activesupport (~> 4.0.0)
+      faraday (~> 0.9.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -28,9 +36,6 @@ GEM
     thread_safe (0.3.5)
     tilt (2.0.1)
     tzinfo (0.3.45)
-    wunderlist-api (0.7.1)
-      activesupport (~> 4.0.0)
-      faraday (~> 0.9.1)
 
 PLATFORMS
   ruby
@@ -38,4 +43,4 @@ PLATFORMS
 DEPENDENCIES
   rest-client (< 1.8)
   sinatra
-  wunderlist-api
+  wunderlist-api!
