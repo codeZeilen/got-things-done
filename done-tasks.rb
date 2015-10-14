@@ -1,6 +1,7 @@
 require 'sinatra'
 require 'net/http'
 require 'json'
+require 'uri'
 
 CLIENT_ID = "a9bcc58b3bf5dc9796b2"
 CLIENT_SECRET = "7bd2f246e5eb67b9d18653dec325c4b669e28842a5106abf1a87da1bab5e"
@@ -24,12 +25,21 @@ end
 get '/authorize' do
   if VALID_STATES.include? params['state'] then
     VALID_STATES.delete(params['state'])
+
     access_code_request_data = {
       "client_id" => CLIENT_ID,
       "client_secret" => CLIENT_SECRET,
       "code" => params['code']
     }
-    access_code = JSON.parse(Net::HTTP.post(ACCESS_CODE_URL, access_code_request_data.to_json))['access_token']
+    url = URI(ACCESS_CODE_URL)
+    req = Net::HTTP::Post.new(uri)
+    req.body = multipart_data
+    req.content_type = 'json'
+    result = Net::HTTP.start(url.hostname, url.port) do |http|
+      http.request(req)
+    end
+    access_code = JSON.parse(result)['access_token']
+
     session[:access_code] = access_code
     redirect to('/tasks')
   else 
