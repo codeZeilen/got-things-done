@@ -53,8 +53,11 @@ get '/tasks' do
     :client_id => CLIENT_ID
   }) 
 
+  user = wl.user
   lists = wl.lists
   tasks = lists.flat_map { |l| l.tasks(:completed => true) }
+  tasks.select { |t| DateTime.iso8601(t.completed_at).to_date == Date.today }
+  tasks.select { |t| t.completed_by_id == user.id }
 
   return tasks.map { |t| t.title }
 end
