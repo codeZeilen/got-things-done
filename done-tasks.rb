@@ -54,7 +54,7 @@ get '/tasks' do
   }) 
 
   lists = wl.lists
-  tasks = lists.flat_map { |l| l.tasks(completed => true) }
+  tasks = lists.flat_map { |l| l.tasks(:completed => true) }
 
   return tasks.map { |t| t.title }
 end
