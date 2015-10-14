@@ -1,7 +1,7 @@
 require 'sinatra'
-require 'net/http'
 require 'json'
 require 'uri'
+require 'rest-client'
 
 CLIENT_ID = "a9bcc58b3bf5dc9796b2"
 CLIENT_SECRET = "7bd2f246e5eb67b9d18653dec325c4b669e28842a5106abf1a87da1bab5e"
@@ -31,17 +31,13 @@ get '/authorize' do
       "client_secret" => CLIENT_SECRET,
       "code" => params['code']
     }
-    url = URI(ACCESS_CODE_URL)
-    result = Net::HTTP.start(url.hostname, url.port) do |http|
-      req = Net::HTTP::Post.new(url)
-      req.body = access_code_request_data.to_json
-      req.content_type = 'json'
-      http.request(req)
-    end
-    case result
-    when Net::HTTPSuccess, Net::HTTPRedirection
-      access_code = JSON.parse(result.body)['access_token']
+    response = RestClient.post ACCESS_CODE_URL, access_code_request_data.to_json, :content_type => :json, :accept => :json
 
+    case response.code
+    when 200
+      access_code = JSON.parse(response.body)['access_token']
+
+      return access_code
       session[:access_code] = access_code
       redirect to('/tasks')
     else
