@@ -1,7 +1,7 @@
 require 'sinatra'
 require 'json'
-require 'uri'
 require 'rest-client'
+require 'wunderlist'
 
 CLIENT_ID = "a9bcc58b3bf5dc9796b2"
 CLIENT_SECRET = "7bd2f246e5eb67b9d18653dec325c4b669e28842a5106abf1a87da1bab5e"
@@ -49,5 +49,14 @@ get '/authorize' do
 end
 
 get '/tasks' do
-  return session[:access_code]
+  wl = Wunderlist::API.new({
+    :access_token => session[:access_code],
+    :client_id => CLIENT_ID
+  }) 
+
+  lists = wl.lists
+  tasks = lists.flat_map { |l| l.tasks(completed => true) }
+
+  return tasks.map { |t| t.title }
 end
+
