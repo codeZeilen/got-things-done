@@ -2,7 +2,7 @@
 
 <h1>Greetings <%= user_name %>! Today, you have accomplished:</h1>
 <ul>
-<%= tasks.each do |t| %>
+<% tasks.each do |t| %>
   <li><%= t.title %></li>
 <% end %>
 </ul>
