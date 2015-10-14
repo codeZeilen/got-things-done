@@ -33,15 +33,7 @@ get '/' do
     tasks = tasks.select { |t| DateTime.iso8601(t.completed_at).to_date == Date.today }
     tasks = tasks.select { |t| t.completed_by_id == user.id }
 
-    template = "<html><body>
-<h1>Greetings <%= user_name %>! Today, you have accomplished:
-<ul>
-<%= tasks.each do |t| %>
-  <li>t.title</li>
-<% end %>
-</ul>
-</body></html>"
-    erb template, :locals => { :tasks => tasks, :user_name => user.name }
+    erb :index, :locals => { :tasks => tasks, :user_name => user.name }
   end
 end
 

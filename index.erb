@@ -1,0 +1,10 @@
+<html><body>
+
+<h1>Greetings <%= user_name %>! Today, you have accomplished:
+<ul>
+<%= tasks.each do |t| %>
+  <li>t.title</li>
+<% end %>
+</ul>
+
+</body></html>"
