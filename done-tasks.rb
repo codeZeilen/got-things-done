@@ -37,7 +37,6 @@ get '/authorize' do
     when 200
       access_code = JSON.parse(response.body)['access_token']
 
-      return access_code
       session[:access_code] = access_code
       redirect to('/tasks')
     else
