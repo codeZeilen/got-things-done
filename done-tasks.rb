@@ -9,8 +9,11 @@ OAUTH_URL =
 "https://www.wunderlist.com/oauth/authorize?client_id=%{client_id}&redirect_uri=%{redirect_url}&state=%{state}"
 
 REDIRECT_URL = "http://done-tasks.herokuapp.com/authorize"
+ACCESS_CODE_URL = "https://www.wunderlist.com/oauth/access_token"
 
 VALID_STATES = []
+
+enable :sessions
 
 get '/' do
   state = (0...20).map { ('a'..'z').to_a[rand(26)] }.join
@@ -27,8 +30,13 @@ get '/authorize' do
       "code" => params['code']
     }
     access_code = JSON.parse(Net::HTTP.post(ACCESS_CODE_URL, access_code_request_data.to_json))['access_token']
-    return access_code
+    session[:access_code] = access_code
+    redirect to('/tasks')
   else 
     return 502
   end
+end
+
+get '/tasks' do
+  return session[:access_code]
 end
