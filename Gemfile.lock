@@ -1,6 +1,7 @@
 GIT
   remote: https://github.com/codeZeilen/wunderlist-api.git
-  revision: 6672e57a86d367533da916bd47fd28eb3d44e5c1
+  revision: f5e00f1523e40c82966c8ec2bcde1c9d281fe07b
+  branch: completed-at-and-user-interface
   specs:
     wunderlist-api (0.7.1)
       activesupport (~> 4.0.0)
