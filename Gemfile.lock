@@ -1,5 +1,5 @@
 GIT
-  remote: git@github.com:codeZeilen/wunderlist-api.git
+  remote: https://github.com/codeZeilen/wunderlist-api.git
   revision: 6672e57a86d367533da916bd47fd28eb3d44e5c1
   specs:
     wunderlist-api (0.7.1)
