@@ -33,7 +33,7 @@ get '/authorize' do
     }
     url = URI(ACCESS_CODE_URL)
     req = Net::HTTP::Post.new(uri)
-    req.body = multipart_data
+    req.body = access_code_request_data.to_json
     req.content_type = 'json'
     result = Net::HTTP.start(url.hostname, url.port) do |http|
       http.request(req)
