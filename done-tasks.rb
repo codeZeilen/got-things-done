@@ -17,9 +17,32 @@ VALID_STATES = []
 enable :sessions
 
 get '/' do
-  state = (0...20).map { ('a'..'z').to_a[rand(26)] }.join
-  VALID_STATES << state
-  redirect to(OAUTH_URL % {:client_id => CLIENT_ID, :redirect_url => REDIRECT_URL, :state => state})
+  if not session['access_code']
+    state = (0...20).map { ('a'..'z').to_a[rand(26)] }.join
+    VALID_STATES << state
+    redirect to(OAUTH_URL % {:client_id => CLIENT_ID, :redirect_url => REDIRECT_URL, :state => state})
+  else 
+    wl = Wunderlist::API.new({
+      :access_token => session[:access_code],
+      :client_id => CLIENT_ID
+    }) 
+
+    user = wl.user
+    lists = wl.lists
+    tasks = lists.flat_map { |l| l.tasks(:completed => true) }
+    tasks = tasks.select { |t| DateTime.iso8601(t.completed_at).to_date == Date.today }
+    tasks = tasks.select { |t| t.completed_by_id == user.id }
+
+    template = "<html><body>
+<h1>Greetings <%= user_name %>! Today, you have accomplished:
+<ul>
+<%= tasks.each do |t| %>
+  <li>t.title</li>
+<% end %>
+</ul>
+</body></html>"
+    erb template, :locals => { :tasks => tasks, :user_name => user.name }
+  end
 end
 
 get '/authorize' do
@@ -38,27 +61,12 @@ get '/authorize' do
       access_code = JSON.parse(response.body)['access_token']
 
       session[:access_code] = access_code
-      redirect to('/tasks')
+      redirect to('/')
     else
       return 502
     end
   else 
     return 502
   end
-end
-
-get '/tasks' do
-  wl = Wunderlist::API.new({
-    :access_token => session[:access_code],
-    :client_id => CLIENT_ID
-  }) 
-
-  user = wl.user
-  lists = wl.lists
-  tasks = lists.flat_map { |l| l.tasks(:completed => true) }
-  tasks = tasks.select { |t| DateTime.iso8601(t.completed_at).to_date == Date.today }
-  tasks = tasks.select { |t| t.completed_by_id == user.id }
-
-  return tasks.map { |t| t.title }
 end
 
