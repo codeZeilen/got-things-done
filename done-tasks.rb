@@ -26,7 +26,7 @@ get '/authorize' do
       "client_secret" => CLIENT_SECRET,
       "code" => params['code']
     }
-    access_code = JSON.parse(http.post(ACCESS_CODE_URL, access_code_request_data.to_json))['access_token']
+    access_code = JSON.parse(HTTP.post(ACCESS_CODE_URL, access_code_request_data.to_json))['access_token']
     return access_code
   else 
     return 502
