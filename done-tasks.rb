@@ -32,16 +32,21 @@ get '/authorize' do
       "code" => params['code']
     }
     url = URI(ACCESS_CODE_URL)
-    req = Net::HTTP::Post.new(uri)
-    req.body = access_code_request_data.to_json
-    req.content_type = 'json'
     result = Net::HTTP.start(url.hostname, url.port) do |http|
+      req = Net::HTTP::Post.new(url)
+      req.body = access_code_request_data.to_json
+      req.content_type = 'json'
       http.request(req)
     end
-    access_code = JSON.parse(result)['access_token']
+    case result
+    when Net::HTTPSuccess, Net::HTTPRedirection
+      access_code = JSON.parse(result.body)['access_token']
 
-    session[:access_code] = access_code
-    redirect to('/tasks')
+      session[:access_code] = access_code
+      redirect to('/tasks')
+    else
+      return 502
+    end
   else 
     return 502
   end
