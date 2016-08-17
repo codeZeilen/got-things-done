@@ -37,7 +37,7 @@ get '/' do
     tasks_per_week = tasks_per_week.select do |day, t|
       Date.today - day < 7
     end
-    tasks_per_week = tasks_per_week.sort {|d1, d2| d1 > d2}
+    tasks_per_week = tasks_per_week.sort.reverse
 
     erb :index, :locals => { :tasks_per_week => tasks_per_week, :user_name => user.name }
   end
