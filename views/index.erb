@@ -1,34 +1,32 @@
 <html lang="en">
 <head>
-
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta http-equiv="x-ua-compatible" content="ie=edge">
 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.3/css/bootstrap.min.css" integrity="sha384-MIwDKRSSImVFAZCVLtU0LMDdON6KVCrZHyVQQj6e8wIEJkW4tvwqXrbMIya1vriY" crossorigin="anonymous">
-
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 </head>
 
 <body>
-
 <div class="container">
   <div class="row">
     <div class="col-sm-3">
     </div>
     <div class="col-sm-6">
-      <h1>What you are accomplishing</h1>
+      <h1>Got Things Done</h1>
       <p class="lead">
-        Relax and take a look at everything you have got done during the last 7 days.
+        Relax and take a look at everything you have accomplished during the last 7 days.
       </p>
 
 
       <% tasks_per_week.each do |day, tasks_group| %>
         <div class="card">
           <div class="card-block">
-            <h4 class="card-title"><%= day.strftime('%e %b') %></h4>
+            <h4 class="card-title"><%= day.strftime('%e. %B') %></h4>
             <ul>
               <% tasks_group.each do |t| %>
-                <li><%= t.title %></li>
+                <li><i style="color: green;" class="fa fa-check" aria-hidden="true"></i><%= t.title %></li>
               <% end %>
             </ul>
           </div>
