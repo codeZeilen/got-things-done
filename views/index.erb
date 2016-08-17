@@ -24,9 +24,9 @@
         <div class="card">
           <div class="card-block">
             <h4 class="card-title"><%= day.strftime('%e. %B') %></h4>
-            <ul>
+            <ul class="list-unstyled">
               <% tasks_group.each do |t| %>
-                <li><i style="color: green;" class="fa fa-check" aria-hidden="true"></i><%= t.title %></li>
+                <li><i style="color: green;" class="fa fa-check" aria-hidden="true"></i> <%= t.title %></li>
               <% end %>
             </ul>
           </div>
