@@ -69,5 +69,5 @@ get '/authorize' do
 end
 
 get '/favicon.ico' do
-  [200, {:content_type => "image/png"}, File.read('favicon.png')]
+  [200, {"Content-Type" => "image/png"}, File.read('favicon.png')]
 end
