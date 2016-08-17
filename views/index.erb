@@ -5,7 +5,7 @@
 <% tasks_per_week.each do |day, tasks_group| %>
   <li><%= day %></li>
   <ul>
-    <% tasks_group do |t| %>
+    <% tasks_group.each do |t| %>
       <li><%= t.title %></li>
     <% end %>
   </ul>
