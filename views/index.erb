@@ -11,17 +11,36 @@
 
 <body>
 
-<h1>Greetings <%= user_name %>! Today, you have accomplished:</h1>
-<ul>
-<% tasks_per_week.each do |day, tasks_group| %>
-  <li><%= day %></li>
-  <ul>
-    <% tasks_group.each do |t| %>
-      <li><%= t.title %></li>
-    <% end %>
-  </ul>
-<% end %>
-</ul>
+<div class="container">
+  <div class="row">
+    <div class="col-sm-3">
+    </div>
+    <div class="col-sm-6">
+      <h1>What you are accomplishing</h1>
+      <p class="lead">
+        Relax and take a look at everything you have got done during the last 7 days.
+      </p>
+
+
+      <% tasks_per_week.each do |day, tasks_group| %>
+        <div class="card">
+          <div class="card-block">
+            <h4> class="card-title"<%= day %></h4>
+            <ul>
+              <% tasks_group.each do |t| %>
+                <li><%= t.title %></li>
+              <% end %>
+            </ul>
+          </div>
+        </div>
+      <% end %>
+
+
+    </div>
+    <div class="col-sm-3">
+    </div>
+  </div>
+</div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js" integrity="sha384-THPy051/pYDQGanwU6poAc/hOdQxjnOEXzbT+OuUAFqNqFjL+4IGLBgCJC3ZOShY" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.2.0/js/tether.min.js" integrity="sha384-Plbmg8JY28KFelvJVai01l8WyZzrYWG825m+cZ0eDDS1f7d/js6ikvy1+X+guPIB" crossorigin="anonymous"></script>
