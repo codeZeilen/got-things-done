@@ -14,8 +14,6 @@ ACCESS_CODE_URL = "https://www.wunderlist.com/oauth/access_token"
 
 VALID_STATES = []
 
-set :public_folder, File.dirname(__FILE__) + '/static'
-
 enable :sessions
 
 get '/' do
@@ -68,4 +66,8 @@ get '/authorize' do
   else 
     return 502
   end
+end
+
+get '/favicon.ico' do
+  [200, {:content_type => "image/png"}, File.read('favicon.png')]
 end
