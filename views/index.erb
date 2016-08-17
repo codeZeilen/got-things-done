@@ -2,8 +2,13 @@
 
 <h1>Greetings <%= user_name %>! Today, you have accomplished:</h1>
 <ul>
-<% tasks.each do |t| %>
-  <li><%= t.title %></li>
+<% tasks_per_week.each do |day, tasks_group| %>
+  <li><%= day %></li>
+  <ul>
+    <% tasks_group do |t| %>
+      <li><%= t.title %></li>
+    <% end %>
+  </ul>
 <% end %>
 </ul>
 

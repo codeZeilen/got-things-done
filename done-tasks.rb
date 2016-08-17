@@ -30,10 +30,15 @@ get '/' do
     user = wl.user
     lists = wl.lists
     tasks = lists.flat_map { |l| l.tasks(:completed => true) }
-    tasks = tasks.select { |t| DateTime.iso8601(t.completed_at).to_date == Date.today }
     tasks = tasks.select { |t| t.completed_by_id == user.id }
+    tasks_per_week = tasks.group_by do |t|
+      DateTime.iso8601(t.completed_at).to_date
+    end
+    tasks_per_week = tasks_per_week.select do |day, t|
+      Date.today - day < 7
+    end
 
-    erb :index, :locals => { :tasks => tasks, :user_name => user.name }
+    erb :index, :locals => { :tasks => tasks_per_week, :user_name => user.name }
   end
 end
 
