@@ -14,6 +14,8 @@ ACCESS_CODE_URL = "https://www.wunderlist.com/oauth/access_token"
 
 VALID_STATES = []
 
+set :public_folder, File.dirname(__FILE__) + '/static'
+
 enable :sessions
 
 get '/' do
@@ -67,4 +69,3 @@ get '/authorize' do
     return 502
   end
 end
-
