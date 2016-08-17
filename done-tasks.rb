@@ -38,7 +38,7 @@ get '/' do
       Date.today - day < 7
     end
 
-    erb :index, :locals => { :tasks => tasks_per_week, :user_name => user.name }
+    erb :index, :locals => { :tasks_per_week => tasks_per_week, :user_name => user.name }
   end
 end
 
