@@ -3,11 +3,14 @@ require 'json'
 require 'rest-client'
 require 'wunderlist'
 require './done-tasks-credentials'
+require 'logger'
 
 OAUTH_URL =
 "https://www.wunderlist.com/oauth/authorize?client_id=%{client_id}&redirect_uri=%{redirect_url}&state=%{state}"
-
 ACCESS_CODE_URL = "https://www.wunderlist.com/oauth/access_token"
+
+LOGGER = Logger.new(STDOUT)
+LOGGER.level = Logger::INFO
 
 VALID_STATES = []
 
@@ -15,10 +18,12 @@ enable :sessions
 
 get '/' do
   if not session['access_code']
-    state = (0...20).map { ('a'..'z').to_a[rand(26)] }.join
+    LOGGER.info("New access")
+    state = (0...40).map { ('a'..'z').to_a[rand(26)] }.join
     VALID_STATES << state
     redirect to(OAUTH_URL % {:client_id => Credentials::CLIENT_ID, :redirect_url => Credentials::REDIRECT_URL, :state => state})
   else 
+    LOGGER.info("Normal access")
     wl = Wunderlist::API.new({
       :access_token => session[:access_code],
       :client_id => Credentials::CLIENT_ID
