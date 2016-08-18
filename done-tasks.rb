@@ -7,7 +7,6 @@ require 'done-tasks-credentials'
 OAUTH_URL =
 "https://www.wunderlist.com/oauth/authorize?client_id=%{client_id}&redirect_uri=%{redirect_url}&state=%{state}"
 
-REDIRECT_URL = "http://done-tasks.herokuapp.com/authorize"
 ACCESS_CODE_URL = "https://www.wunderlist.com/oauth/access_token"
 
 VALID_STATES = []
@@ -18,11 +17,11 @@ get '/' do
   if not session['access_code']
     state = (0...20).map { ('a'..'z').to_a[rand(26)] }.join
     VALID_STATES << state
-    redirect to(OAUTH_URL % {:client_id => CLIENT_ID, :redirect_url => REDIRECT_URL, :state => state})
+    redirect to(OAUTH_URL % {:client_id => Credentials::CLIENT_ID, :redirect_url => Credentials::REDIRECT_URL, :state => state})
   else 
     wl = Wunderlist::API.new({
       :access_token => session[:access_code],
-      :client_id => CLIENT_ID
+      :client_id => Credentials::CLIENT_ID
     }) 
 
     user = wl.user
