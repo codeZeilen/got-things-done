@@ -2,9 +2,7 @@ require 'sinatra'
 require 'json'
 require 'rest-client'
 require 'wunderlist'
-
-CLIENT_ID = "a9bcc58b3bf5dc9796b2"
-CLIENT_SECRET = "7bd2f246e5eb67b9d18653dec325c4b669e28842a5106abf1a87da1bab5e"
+require 'done-tasks-credentials'
 
 OAUTH_URL =
 "https://www.wunderlist.com/oauth/authorize?client_id=%{client_id}&redirect_uri=%{redirect_url}&state=%{state}"
