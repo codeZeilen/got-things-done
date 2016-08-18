@@ -49,7 +49,7 @@ get '/authorize' do
       "client_secret" => Credentials::CLIENT_SECRET,
       "code" => params['code']
     }
-    response = RestClient.post Credentials::ACCESS_CODE_URL, access_code_request_data.to_json, :content_type => :json, :accept => :json
+    response = RestClient.post ACCESS_CODE_URL, access_code_request_data.to_json, :content_type => :json, :accept => :json
 
     case response.code
     when 200
