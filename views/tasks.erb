@@ -1,0 +1,14 @@
+<% tasks_per_week.each do |day, tasks_group| %>
+<div class="card">
+  <div class="card-block">
+    <h4 class="card-title"><%= day.strftime('%e. %B') %></h4>
+    <ul class="list-unstyled">
+      <% tasks_group.each do |t| %>
+	<li>
+          <i style="color: green;" class="fa fa-check" aria-hidden="true"></i> <%= t.title %>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</div>
+<% end %>

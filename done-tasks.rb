@@ -27,6 +27,13 @@ def remove_state(state)
   return STATES_DB.execute("DELETE FROM STATES where value = ?", [state])
 end
 
+def get_wunderlist(access_code)
+  return Wunderlist::API.new({
+    :access_token => access_code,
+    :client_id => Credentials::CLIENT_ID
+  }) 
+end
+
 enable :sessions
 set :session_secret, ENV['SESSION_KEY'] || Credentials::SESSION_SECRET
 
@@ -40,27 +47,30 @@ get '/' do
     state = (0...40).map { ('a'..'z').to_a[rand(26)] }.join
     add_state(state)
     redirect to(OAUTH_URL % {:client_id => Credentials::CLIENT_ID, :redirect_url => Credentials::REDIRECT_URL, :state => state})
-  else 
-    LOGGER.info("Normal access")
-    wl = Wunderlist::API.new({
-      :access_token => session[:access_code],
-      :client_id => Credentials::CLIENT_ID
-    }) 
-
-    user = wl.user
-    lists = wl.lists
-    tasks = lists.flat_map { |l| l.tasks(:completed => true) }
-    tasks = tasks.select { |t| t.completed_by_id == user.id }
-    tasks_per_week = tasks.group_by do |t|
-      DateTime.iso8601(t.completed_at).to_date
-    end
-    tasks_per_week = tasks_per_week.select do |day, t|
-      Date.today - day < 7
-    end
-    tasks_per_week = tasks_per_week.sort.reverse
-
-    erb :index, :locals => { :tasks_per_week => tasks_per_week, :user_name => user.name }
   end
+
+  wl = get_wunderlist(session[:access_code])
+  user = wl.user
+  erb :index, :locals => { :user_name => user.name }
+end
+
+get '/tasks' do
+  LOGGER.info("Normal access")
+  wl = get_wunderlist(session[:access_code])
+
+  lists = wl.lists
+  user = wl.user
+  tasks = lists.flat_map { |l| l.tasks(:completed => true) }
+  tasks = tasks.select { |t| t.completed_by_id == user.id }
+  tasks_per_week = tasks.group_by do |t|
+    DateTime.iso8601(t.completed_at).to_date
+  end
+  tasks_per_week = tasks_per_week.select do |day, t|
+    Date.today - day < 7
+  end
+  tasks_per_week = tasks_per_week.sort.reverse
+
+  erb :tasks, :locals => { :tasks_per_week => tasks_per_week }
 end
 
 get '/authorize' do
