@@ -2,7 +2,7 @@
 # note the trailing slash in this example
 @dir = "/home/patrick/got-things-done/"
 
-worker_processes 2
+worker_processes 4
 working_directory @dir
 
 timeout 30
