@@ -5,6 +5,7 @@ require 'wunderlist'
 require 'sqlite3'
 require './done-tasks-credentials'
 require 'logger'
+require 'erubis'
 
 OAUTH_URL =
 "https://www.wunderlist.com/oauth/authorize?client_id=%{client_id}&redirect_uri=%{redirect_url}&state=%{state}"
