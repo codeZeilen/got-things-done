@@ -2,6 +2,7 @@ require 'sinatra'
 require 'json'
 require 'rest-client'
 require 'wunderlist'
+require 'sqlite3'
 require './done-tasks-credentials'
 require 'logger'
 
@@ -12,15 +13,32 @@ ACCESS_CODE_URL = "https://www.wunderlist.com/oauth/access_token"
 LOGGER = Logger.new(STDOUT)
 LOGGER.level = Logger::INFO
 
-VALID_STATES = []
+STATES_DB = SQLite3::Database.new "states.db"
+
+def get_valid_states() 
+  return STATES_DB.execute("select value from states").flat_map {|r| r}
+end
+
+def add_state(state)
+  return STATES_DB.execute("INSERT INTO STATES(value) VALUES(?)", [state])
+end
+
+def remove_state(state)
+  return STATES_DB.execute("DELETE FROM STATES where value = ?", [state])
+end
 
 enable :sessions
+set :session_secret, ENV['SESSION_KEY'] || Credentials::SESSION_SECRET
+
+before do
+  cache_control :public, :must_revalidate, :max_age => 120
+end
 
 get '/' do
-  if not session['access_code']
+  if not session[:access_code]
     LOGGER.info("New access")
     state = (0...40).map { ('a'..'z').to_a[rand(26)] }.join
-    VALID_STATES << state
+    add_state(state)
     redirect to(OAUTH_URL % {:client_id => Credentials::CLIENT_ID, :redirect_url => Credentials::REDIRECT_URL, :state => state})
   else 
     LOGGER.info("Normal access")
@@ -46,8 +64,8 @@ get '/' do
 end
 
 get '/authorize' do
-  if VALID_STATES.include? params['state'] then
-    VALID_STATES.delete(params['state'])
+  if get_valid_states.include? params['state'] then
+    remove_state(params['state'])
 
     access_code_request_data = {
       "client_id" => Credentials::CLIENT_ID,
