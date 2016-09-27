@@ -82,6 +82,10 @@
 
       </div>
 
+      <div id="error" class="text-xs-center" style="display:none;">
+        <h3>Oops something got wrong while getting your list. Please check again later.</h3>
+      </div>
+
       <ul class="list-unstyled footer-text">
         <li><small>We do not store any of your data but display them directly from <a href="http://www.wunderlist.com">Wunderlist</a>.</small></li>
         <li><small>Brought to you by <a href="https://www.patrickrein.de">Patrick Rein (contact)</a> and inspired by <a href="http://livable.media/">Center for Livable Media</a>. Find the code in the <a href="https://github.com/codeZeilen/got-things-done">got-things-done GitHub repository</a>.</small></li>
@@ -109,14 +113,19 @@
       $("#spinner").addClass("fadeInOut");
     }, 500);
 
-    $.get("tasks", function(content) {
-      clearTimeout(timeoutId);
-      $("#spinner").fadeOut(100);
-
-      $("#tasks").hide();
-      $("#tasks").html(content);
-      $("#tasks").slideDown(300);
-    });
+    $.get("tasks")
+      .always(function() {
+        clearTimeout(timeoutId);
+        $("#spinner").fadeOut(100);
+      })
+      .fail(function() {
+        $("#error").show();
+      })
+      .done(function(content) {
+        $("#tasks").hide();
+        $("#tasks").html(content);
+        $("#tasks").slideDown(300);
+      });
 
   });
 </script>
