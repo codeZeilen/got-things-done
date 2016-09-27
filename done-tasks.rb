@@ -92,11 +92,17 @@ get '/authorize' do
       session[:access_code] = access_code
       redirect to('/')
     else
+      LOGGER.error("Invalid response from Wunderlist " + response.to_s)
       return 502
     end
   else 
+    LOGGER.error("Authorization state could not be found in valid states table: " + params["state"])
     return 502
   end
+end
+
+error do
+  erb :errorPage
 end
 
 get '/favicon.ico' do
