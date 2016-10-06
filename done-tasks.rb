@@ -21,11 +21,19 @@ def get_valid_states()
 end
 
 def add_state(state)
-  return STATES_DB.execute("INSERT INTO STATES(value) VALUES(?)", [state])
+  LOGGER.info("Adding a new state: " + state.to_s)
+  STATES_DB.transaction()
+  result = STATES_DB.execute("INSERT INTO STATES(value) VALUES(?)", [state])
+  STATES_DB.commit()
+  return result
 end
 
 def remove_state(state)
-  return STATES_DB.execute("DELETE FROM STATES where value = ?", [state])
+  LOGGER.info("Removing a state: " + state.to_s)
+  STATES_DB.transaction()
+  result = STATES_DB.execute("DELETE FROM STATES where value = ?", [state])
+  STATES_DB.commit()
+  return 
 end
 
 def get_wunderlist(access_code)
@@ -44,7 +52,7 @@ end
 
 get '/' do
   if not session[:access_code]
-    LOGGER.info("New access")
+    LOGGER.info("Asking for new access code")
     state = (0...40).map { ('a'..'z').to_a[rand(26)] }.join
     add_state(state)
     redirect to(OAUTH_URL % {:client_id => Credentials::CLIENT_ID, :redirect_url => Credentials::REDIRECT_URL, :state => state})
@@ -75,8 +83,9 @@ get '/tasks' do
 end
 
 get '/authorize' do
+  LOGGER.info("Incoming authorization response: " + params.to_s)
   if get_valid_states.include? params['state'] then
-    remove_state(params['state'])
+    #remove_state(params['state'])
 
     access_code_request_data = {
       "client_id" => Credentials::CLIENT_ID,
@@ -84,6 +93,7 @@ get '/authorize' do
       "code" => params['code']
     }
     response = RestClient.post ACCESS_CODE_URL, access_code_request_data.to_json, :content_type => :json, :accept => :json
+    LOGGER.info("Got access token" + response.to_s)
 
     case response.code
     when 200
