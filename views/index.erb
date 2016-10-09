@@ -72,6 +72,12 @@
         Relax and take a look at everything you have accomplished during the last 7 days.
       </p>
 
+      <div id="login-container" class="container-fluid" style="display:none;">
+        <div class="col-sm-12 text-center">
+          <button id="login-button" class="btn btn-primary" title="Login"></button>
+        </div>
+      </div>
+
       <div id="spinner" class="text-xs-center">
         <span id="spinner-text" class="invisible">
           <i style="color: green;" class="fa fa-check" aria-hidden="true"></i>Loading
@@ -107,26 +113,37 @@
 
 <script type="text/javascript">
   jQuery(function() {
-    var timeoutId = window.setTimeout(function() {
-      /* To give the cache time to react */
-      $("#spinner-text").removeClass("invisible");
-      $("#spinner").addClass("fadeInOut");
-    }, 500);
+    var userIsLoggedIn = <%= userIsLoggedIn.to_s %>;
+    function loadTasks() {
+      var timeoutId = window.setTimeout(function() {
+        /* To give the cache time to react */
+        $("#spinner-text").removeClass("invisible");
+        $("#spinner").addClass("fadeInOut");
+      }, 500);
 
-    $.get("tasks")
-      .always(function() {
-        clearTimeout(timeoutId);
-        $("#spinner").fadeOut(100);
-      })
-      .fail(function() {
-        $("#error").show();
-      })
-      .done(function(content) {
-        $("#tasks").hide();
-        $("#tasks").html(content);
-        $("#tasks").slideDown(300);
+      $.get("tasks")
+        .always(function() {
+          clearTimeout(timeoutId);
+          $("#spinner").fadeOut(100);
+        })
+        .fail(function() {
+          $("#error").show();
+        })
+        .done(function(content) {
+          $("#tasks").hide();
+          $("#tasks").html(content);
+          $("#tasks").slideDown(300);
+        });
+    };
+
+    if(userIsLoggedIn) {
+      loadTasks()
+    } else {
+      $("login-container").show();
+      $("login-button").click(function(evt) {
+        $get("login"); 
       });
-
+    } 
   });
 </script>
 </body>

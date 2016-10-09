@@ -51,16 +51,21 @@ before do
 end
 
 get '/' do
-  if not session[:access_code]
-    LOGGER.info("Asking for new access code")
-    state = (0...40).map { ('a'..'z').to_a[rand(26)] }.join
-    add_state(state)
-    redirect to(OAUTH_URL % {:client_id => Credentials::CLIENT_ID, :redirect_url => Credentials::REDIRECT_URL, :state => state})
+  loggedIn = false
+  if session[:access_code]
+    loggedIn = true 
   end
 
   wl = get_wunderlist(session[:access_code])
   user = wl.user
-  erb :index, :locals => { :user_name => user.name }
+  erb :index, :locals => { :user_name => user.name, :userIsLoggedIn => loggedIn }
+end
+
+get '/login' do
+  LOGGER.info("Asking for new access code")
+  state = (0...40).map { ('a'..'z').to_a[rand(26)] }.join
+  add_state(state)
+  redirect to(OAUTH_URL % {:client_id => Credentials::CLIENT_ID, :redirect_url => Credentials::REDIRECT_URL, :state => state})
 end
 
 get '/tasks' do
