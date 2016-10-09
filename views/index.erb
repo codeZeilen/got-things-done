@@ -20,12 +20,22 @@
     text-decoration: underline;
   }
 
+  #login-container {
+    display: none;
+    margin-top: 1em; 
+    margin-bottom: 1em;
+  }
+
   #spinner {
     padding-top: 3em;
     padding-bottom: 3em;
 
     font-size: 3em;
     text-align: center;
+  }
+
+  #error {
+    display:none;
   }
 
   .fadeInOut {
@@ -72,10 +82,12 @@
         Relax and take a look at everything you have accomplished during the last 7 days.
       </p>
 
-      <div id="login-container" class="container-fluid" style="display:none;">
-        <div class="col-sm-12 text-center">
-          <button id="login-button" class="btn btn-primary" title="Login"></button>
+      <div id="login-container" class="container-fluid">
+        <div class="col-sm-4 text-center"></div>
+        <div class="col-sm-4 text-center">
+          <button id="login-button" class="btn btn-primary btn-block" title="Login">Login</button>
         </div>
+        <div class="col-sm-4 text-center"></div>
       </div>
 
       <div id="spinner" class="text-xs-center">
@@ -88,7 +100,7 @@
 
       </div>
 
-      <div id="error" class="text-xs-center" style="display:none;">
+      <div id="error" class="text-xs-center">
         <h3>Oops something got wrong while getting your list. Please check again later.</h3>
       </div>
 
@@ -139,9 +151,14 @@
     if(userIsLoggedIn) {
       loadTasks()
     } else {
-      $("login-container").show();
-      $("login-button").click(function(evt) {
-        $get("login"); 
+      $("#spinner").css("display", "none"); 
+      $("#login-container").show();
+      $("#login-button").click(function(evt) {
+        $.get("login")
+          .done(function(data) {
+            /* We have to redirect */
+            window.location.replace(data);
+          }); 
       });
     } 
   });
