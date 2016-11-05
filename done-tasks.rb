@@ -46,10 +46,6 @@ end
 enable :sessions
 set :session_secret, ENV['SESSION_KEY'] || Credentials::SESSION_SECRET
 
-before do
-  cache_control :public, :must_revalidate, :max_age => 120
-end
-
 get '/' do
   loggedIn = false
   if session[:access_code]
@@ -100,9 +96,7 @@ get '/authorize' do
 
     case response.code
     when 200
-      access_code = JSON.parse(response.body)['access_token']
-
-      session[:access_code] = access_code
+      session[:access_code] = JSON.parse(response.body)['access_token']
       redirect to('/')
     else
       LOGGER.error("Invalid response from Wunderlist " + response.to_s)

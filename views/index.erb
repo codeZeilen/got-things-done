@@ -157,7 +157,7 @@
         $.get("login")
           .done(function(data) {
             /* We have to redirect */
-            window.location.replace(data);
+            window.location.assign(data);
           }); 
       });
     } 
