@@ -59,7 +59,7 @@ get '/login' do
   LOGGER.info("Asking for new access code")
   state = (0...40).map { ('a'..'z').to_a[rand(26)] }.join
   add_state(state)
-  return to(OAUTH_URL % {:client_id => Credentials::CLIENT_ID, :redirect_url => Credentials::REDIRECT_URL, :state => state})
+  return OAUTH_URL % {:client_id => Credentials::CLIENT_ID, :redirect_url => Credentials::REDIRECT_URL, :state => state}
 end
 
 get '/tasks' do
